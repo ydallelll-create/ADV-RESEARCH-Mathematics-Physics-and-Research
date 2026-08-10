@@ -1,7 +1,6 @@
 ```html
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,848 +25,359 @@
 
 <body>
 
-<header>
+<!-- ================= HEADER ================= -->
 
-    <div class="logo">
-        ADV RESEARCH
+<header class="topbar">
+
+    <div class="brand">
+        <div class="brand-name">ADV RESEARCH</div>
+        <div class="brand-subtitle">
+            Scientific Research Laboratory
+        </div>
     </div>
 
-    <nav>
-        <button onclick="showPage('home')">Home</button>
-        <button onclick="showPage('mathematics')">Mathematics</button>
-        <button onclick="showPage('physics')">Physics</button>
-        <button onclick="showPage('research')">Research</button>
-    </nav>
+    <div class="header-author">
+        <strong>Yassine Bechir Dallel</strong>
+        <span>Researcher & Programmer</span>
+    </div>
 
 </header>
 
 
-<main>
+<!-- ================= APP ================= -->
+
+<div class="app">
 
 
-<!-- HOME -->
+    <!-- SIDEBAR -->
 
-<section id="home" class="page active">
+    <aside class="sidebar">
 
-    <div class="hero">
+        <button class="nav-button active"
+                onclick="openHome()">
+            🏠 Home
+        </button>
 
-        <h1>ADV RESEARCH</h1>
+        <button class="nav-button"
+                onclick="openBureau('mathematics')">
+            ∑ Mathematics
+        </button>
 
-        <p class="subtitle">
-            Mathematics • Physics • Scientific Research
-        </p>
+        <button class="nav-button"
+                onclick="openBureau('physics')">
+            ⚛ Physics
+        </button>
 
-        <div class="quote">
-            "God does not play dice with the universe."
-            <span>— Albert Einstein</span>
+        <button class="nav-button"
+                onclick="openResearchHub()">
+            📚 Research
+        </button>
+
+        <div class="sidebar-line"></div>
+
+        <div class="sidebar-title">
+            QUICK ACCESS
         </div>
 
-        <div class="researcher">
-            <h2>Yassine Bechir Dallel</h2>
-            <p>Researcher & Programmer</p>
-        </div>
+        <button class="nav-button"
+                onclick="newResearch()">
+            ＋ New Research
+        </button>
 
-    </div>
+        <button class="nav-button"
+                onclick="openSavedResearch()">
+            ◈ Saved Projects
+        </button>
 
+    </aside>
 
-    <h2 class="section-title">
-        Research Fields
-    </h2>
 
+    <!-- MAIN -->
 
-    <div class="cards">
+    <main class="workspace">
 
-        <div class="card"
-             onclick="showPage('mathematics')">
 
-            <div class="icon">∑</div>
+        <!-- ================= HOME ================= -->
 
-            <h2>Mathematics</h2>
+        <section id="homeScreen" class="screen active">
 
-            <p>
-                Explore mathematical subjects,
-                theories and research.
-            </p>
+            <div class="home-hero">
 
-        </div>
+                <div class="home-label">
+                    ADVANCED SCIENTIFIC RESEARCH
+                </div>
 
+                <h1>
+                    ADV RESEARCH
+                </h1>
 
-        <div class="card"
-             onclick="showPage('physics')">
+                <p>
+                    Mathematics • Physics • Theory • Research
+                </p>
 
-            <div class="icon">⚛</div>
+                <div class="einstein-quote">
 
-            <h2>Physics</h2>
+                    <div>
+                        "God does not play dice with the universe."
+                    </div>
 
-            <p>
-                Explore classical mechanics,
-                quantum mechanics, relativity
-                and mathematical physics.
-            </p>
+                    <span>
+                        — Albert Einstein
+                    </span>
 
-        </div>
+                </div>
 
-    </div>
+            </div>
 
 
-    <h2 class="section-title">
-        Featured Research
-    </h2>
+            <div class="bureau-grid">
 
-    <div id="featuredResearch"></div>
+                <div class="bureau-card"
+                     onclick="openBureau('mathematics')">
 
-</section>
+                    <div class="bureau-symbol">
+                        ∑
+                    </div>
 
+                    <div>
+                        <h2>Mathematics</h2>
 
+                        <p>
+                            Analysis, calculus, complex analysis,
+                            linear algebra and mathematical structures.
+                        </p>
+                    </div>
 
-<!-- MATHEMATICS -->
+                </div>
 
-<section id="mathematics" class="page">
 
-    <button class="back-button"
-            onclick="showPage('home')">
-        ← Back
-    </button>
+                <div class="bureau-card"
+                     onclick="openBureau('physics')">
 
-    <h1>Mathematics</h1>
+                    <div class="bureau-symbol">
+                        ⚛
+                    </div>
 
-    <p class="intro">
-        Select a mathematical field.
-    </p>
+                    <div>
+                        <h2>Physics</h2>
 
+                        <p>
+                            Classical mechanics, quantum mechanics,
+                            relativity and mathematical physics.
+                        </p>
 
-    <div class="topic-grid">
+                    </div>
 
+                </div>
 
-        <div class="topic clickable"
-             onclick="showPage('calculus')">
+            </div>
 
-            <div class="topic-icon">∫</div>
 
-            <h2>Calculus</h2>
+            <div class="formula-background">
 
-            <p>
-                Limits, derivatives, integrals,
-                sequences and series.
-            </p>
+                $$
+                \frac{d}{dt}
+                \left(
+                \frac{\partial L}
+                {\partial \dot q_i}
+                \right)
+                -
+                \frac{\partial L}
+                {\partial q_i}
+                =0
+                $$
 
-        </div>
+            </div>
 
+        </section>
 
-        <div class="topic clickable"
-             onclick="showPage('realAnalysis')">
 
-            <div class="topic-icon">ℝ</div>
 
-            <h2>Real Analysis</h2>
+        <!-- ================= BUREAU ================= -->
 
-            <p>
-                Continuity, convergence,
-                functions and rigorous analysis.
-            </p>
+        <section id="bureauScreen"
+                 class="screen">
 
-        </div>
+            <div class="screen-header">
 
+                <button onclick="goBack()"
+                        class="back-button">
+                    ← Back
+                </button>
 
-        <div class="topic clickable"
-             onclick="showPage('complexAnalysis')">
+                <div>
+                    <div class="screen-kicker"
+                         id="bureauKicker">
+                    </div>
 
-            <div class="topic-icon">ℂ</div>
+                    <h1 id="bureauTitle">
+                    </h1>
+                </div>
 
-            <h2>Complex Analysis</h2>
+            </div>
 
-            <p>
-                Complex functions, residues,
-                contour integration and analytic functions.
-            </p>
 
-        </div>
+            <div id="subjectGrid"
+                 class="subject-grid">
+            </div>
 
+        </section>
 
-        <div class="topic clickable"
-             onclick="showPage('linearAlgebra')">
 
-            <div class="topic-icon">A</div>
 
-            <h2>Linear Algebra</h2>
+        <!-- ================= SUBJECT ================= -->
 
-            <p>
-                Vector spaces, matrices,
-                eigenvalues and linear maps.
-            </p>
+        <section id="subjectScreen"
+                 class="screen">
 
-        </div>
+            <div class="screen-header">
 
-    </div>
+                <button onclick="goBack()"
+                        class="back-button">
+                    ← Back
+                </button>
 
-</section>
+                <div>
 
+                    <div class="screen-kicker"
+                         id="subjectKicker">
+                    </div>
 
+                    <h1 id="subjectTitle">
+                    </h1>
 
-<!-- CALCULUS -->
+                    <p id="subjectDescription">
+                    </p>
 
-<section id="calculus" class="page">
+                </div>
 
-    <button class="back-button"
-            onclick="showPage('mathematics')">
-        ← Back to Mathematics
-    </button>
+            </div>
 
-    <h1>Calculus</h1>
 
-    <p class="intro">
-        Study the fundamental structures of calculus.
-    </p>
+            <div class="project-actions">
 
+                <button class="primary-button"
+                        onclick="newResearchForCurrentSubject()">
+                    ＋ New Research
+                </button>
 
-    <div class="research-topic">
+            </div>
 
-        <h2>Limits</h2>
 
-        <p>
-            The limit describes the behavior of a function
-            as its variable approaches a particular value.
-        </p>
+            <h2 class="content-title">
+                Your Projects
+            </h2>
 
-        <div class="equation">
-            $$\lim_{x\to a} f(x)=L$$
-        </div>
 
-    </div>
+            <div id="subjectProjects"
+                 class="project-grid">
+            </div>
 
+        </section>
 
-    <div class="research-topic">
 
-        <h2>Derivative</h2>
 
-        <p>
-            The derivative measures the instantaneous
-            rate of change of a function.
-        </p>
+        <!-- ================= RESEARCH EDITOR ================= -->
 
-        <div class="equation">
-            $$f'(x)=\lim_{h\to0}
-            \frac{f(x+h)-f(x)}{h}$$
-        </div>
+        <section id="editorScreen"
+                 class="screen">
 
-    </div>
+            <div class="editor-topbar">
 
+                <button onclick="goBack()"
+                        class="back-button">
+                    ← Back
+                </button>
 
-    <div class="research-topic">
+                <div class="editor-actions">
 
-        <h2>Integral</h2>
+                    <button onclick="saveCurrentResearch()"
+                            class="save-button">
+                        💾 Save
+                    </button>
 
-        <p>
-            Integration can represent accumulation,
-            signed area and antiderivatives.
-        </p>
+                    <button onclick="newResearch()">
+                        ＋ New
+                    </button>
 
-        <div class="equation">
-            $$\int_a^b f(x)\,dx$$
-        </div>
+                </div>
 
-    </div>
+            </div>
 
-</section>
 
+            <div class="paper">
 
+                <div class="paper-header">
 
-<!-- REAL ANALYSIS -->
+                    <div class="paper-label">
+                        ADV RESEARCH PAPER
+                    </div>
 
-<section id="realAnalysis" class="page">
+                    <input
+                        id="paperTitle"
+                        class="paper-title"
+                        placeholder="Research title"
+                    >
 
-    <button class="back-button"
-            onclick="showPage('mathematics')">
-        ← Back to Mathematics
-    </button>
+                    <div class="paper-meta">
 
-    <h1>Real Analysis</h1>
+                        <span>
+                            Author:
+                            <strong>
+                                Yassine Bechir Dallel
+                            </strong>
+                        </span>
 
-    <p class="intro">
-        Rigorous study of real-valued functions,
-        sequences and convergence.
-    </p>
+                        <span>
+                            Date:
+                            <strong id="paperDate">
+                            </strong>
+                        </span>
 
+                        <span>
+                            Field:
+                            <strong id="paperField">
+                            </strong>
+                        </span>
 
-    <div class="research-topic">
+                    </div>
 
-        <h2>Sequences</h2>
+                </div>
 
-        <p>
-            A sequence is a function from the natural
-            numbers to a mathematical set.
-        </p>
 
-        <div class="equation">
-            $$a_n\to L$$
-        </div>
+                <div class="paper-toolbar">
 
-    </div>
+                    <button onclick="insertText('## ')">
+                        Heading
+                    </button>
 
+                    <button onclick="insertText('**bold**')">
+                        Bold
+                    </button>
 
-    <div class="research-topic">
+                    <button onclick="insertText('$$\\n\\n$$')">
+                        Equation
+                    </button>
 
-        <h2>Continuity</h2>
+                    <button onclick="insertText('![Image](IMAGE_URL)')">
+                        Image
+                    </button>
 
-        <p>
-            A function is continuous at a point when
-            its limiting value agrees with its value.
-        </p>
+                    <button onclick="insertText('[Video](VIDEO_URL)')">
+                        Video
+                    </button>
 
-        <div class="equation">
-            $$\lim_{x\to a}f(x)=f(a)$$
-        </div>
+                </div>
 
-    </div>
 
+                <textarea
+                    id="paperContent"
+                    class="paper-editor"
+                    placeholder="Begin your research...
 
-    <div class="research-topic">
+You can write normally.
 
-        <h2>Uniform Convergence</h2>
-
-        <p>
-            Uniform convergence controls the approximation
-            simultaneously over the entire domain.
-        </p>
-
-    </div>
-
-</section>
-
-
-
-<!-- COMPLEX ANALYSIS -->
-
-<section id="complexAnalysis" class="page">
-
-    <button class="back-button"
-            onclick="showPage('mathematics')">
-        ← Back to Mathematics
-    </button>
-
-    <h1>Complex Analysis</h1>
-
-    <p class="intro">
-        The study of complex-valued functions.
-    </p>
-
-
-    <div class="research-topic">
-
-        <h2>Holomorphic Functions</h2>
-
-        <p>
-            A complex function is holomorphic when it is
-            complex differentiable in a neighborhood.
-        </p>
-
-        <div class="equation">
-            $$f'(z)=
-            \lim_{h\to0}
-            \frac{f(z+h)-f(z)}{h}$$
-        </div>
-
-    </div>
-
-
-    <div class="research-topic">
-
-        <h2>Residue Theorem</h2>
-
-        <p>
-            Residues allow contour integrals to be evaluated
-            from the singularities inside a contour.
-        </p>
-
-        <div class="equation">
-            $$\oint_C f(z)\,dz
-            =
-            2\pi i
-            \sum_k
-            \operatorname{Res}(f,z_k)$$
-        </div>
-
-    </div>
-
-
-    <div class="research-topic">
-
-        <h2>Contour Integration</h2>
-
-        <p>
-            Integration can be performed along curves
-            in the complex plane.
-        </p>
-
-        <div class="equation">
-            $$\int_C f(z)\,dz$$
-        </div>
-
-    </div>
-
-</section>
-
-
-
-<!-- LINEAR ALGEBRA -->
-
-<section id="linearAlgebra" class="page">
-
-    <button class="back-button"
-            onclick="showPage('mathematics')">
-        ← Back to Mathematics
-    </button>
-
-    <h1>Linear Algebra</h1>
-
-    <p class="intro">
-        Mathematical structures based on vectors,
-        matrices and linear transformations.
-    </p>
-
-
-    <div class="research-topic">
-
-        <h2>Vector Spaces</h2>
-
-        <p>
-            A vector space is a set equipped with
-            vector addition and scalar multiplication.
-        </p>
-
-    </div>
-
-
-    <div class="research-topic">
-
-        <h2>Eigenvalues</h2>
-
-        <p>
-            An eigenvector changes only by a scalar
-            factor under a linear transformation.
-        </p>
-
-        <div class="equation">
-            $$A\mathbf v=\lambda\mathbf v$$
-        </div>
-
-    </div>
-
-
-    <div class="research-topic">
-
-        <h2>Matrix Multiplication</h2>
-
-        <div class="equation">
-            $$(AB)_{ij}
-            =
-            \sum_k A_{ik}B_{kj}$$
-        </div>
-
-    </div>
-
-</section>
-
-
-
-<!-- PHYSICS -->
-
-<section id="physics" class="page">
-
-    <button class="back-button"
-            onclick="showPage('home')">
-        ← Back
-    </button>
-
-    <h1>Physics</h1>
-
-    <p class="intro">
-        Select a field of physics.
-    </p>
-
-
-    <div class="topic-grid">
-
-
-        <div class="topic clickable"
-             onclick="showPage('classicalMechanics')">
-
-            <div class="topic-icon">F</div>
-
-            <h2>Classical Mechanics</h2>
-
-            <p>
-                Newtonian, Lagrangian and
-                Hamiltonian mechanics.
-            </p>
-
-        </div>
-
-
-        <div class="topic clickable"
-             onclick="showPage('quantumMechanics')">
-
-            <div class="topic-icon">ψ</div>
-
-            <h2>Quantum Mechanics</h2>
-
-            <p>
-                Quantum states, operators,
-                Hilbert spaces and Schrödinger equations.
-            </p>
-
-        </div>
-
-
-        <div class="topic clickable"
-             onclick="showPage('relativity')">
-
-            <div class="topic-icon">c</div>
-
-            <h2>Relativity</h2>
-
-            <p>
-                Spacetime, Lorentz transformations
-                and relativistic physics.
-            </p>
-
-        </div>
-
-
-        <div class="topic clickable"
-             onclick="showPage('mathematicalPhysics')">
-
-            <div class="topic-icon">∂</div>
-
-            <h2>Mathematical Physics</h2>
-
-            <p>
-                Differential equations,
-                Fourier analysis and mathematical structures.
-            </p>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-
-<!-- CLASSICAL MECHANICS -->
-
-<section id="classicalMechanics" class="page">
-
-    <button class="back-button"
-            onclick="showPage('physics')">
-        ← Back to Physics
-    </button>
-
-    <h1>Classical Mechanics</h1>
-
-    <p class="intro">
-        The mathematical description of motion and dynamics.
-    </p>
-
-
-    <div class="research-topic">
-
-        <h2>Newton's Second Law</h2>
-
-        <p>
-            The net force determines acceleration.
-        </p>
-
-        <div class="equation">
-            $$\mathbf F=m\mathbf a$$
-        </div>
-
-    </div>
-
-
-    <div class="research-topic">
-
-        <h2>Lagrangian Mechanics</h2>
-
-        <p>
-            The dynamics can be formulated using the
-            Lagrangian
-            $L=T-V$.
-        </p>
-
-        <div class="equation">
-            $$L=T-V$$
-        </div>
-
-    </div>
-
-
-    <div class="research-topic">
-
-        <h2>Euler–Lagrange Equation</h2>
-
-        <p>
-            The equations of motion are obtained from
-            the stationary action principle.
-        </p>
-
-        <div class="equation">
-            $$
-            \frac{d}{dt}
-            \left(
-            \frac{\partial L}
-            {\partial \dot q_i}
-            \right)
-            -
-            \frac{\partial L}
-            {\partial q_i}
-            =0
-            $$
-        </div>
-
-    </div>
-
-</section>
-
-
-
-<!-- QUANTUM MECHANICS -->
-
-<section id="quantumMechanics" class="page">
-
-    <button class="back-button"
-            onclick="showPage('physics')">
-        ← Back to Physics
-    </button>
-
-    <h1>Quantum Mechanics</h1>
-
-    <p class="intro">
-        Mathematical foundations of quantum theory.
-    </p>
-
-
-    <div class="research-topic">
-
-        <h2>Schrödinger Equation</h2>
-
-        <div class="equation">
-            $$
-            i\hbar
-            \frac{\partial\psi}{\partial t}
-            =
-            \hat H\psi
-            $$
-        </div>
-
-    </div>
-
-
-    <div class="research-topic">
-
-        <h2>Quantum Operators</h2>
-
-        <p>
-            Physical observables are represented by
-            operators acting on quantum states.
-        </p>
-
-        <div class="equation">
-            $$\hat A|\psi\rangle$$
-        </div>
-
-    </div>
-
-
-    <div class="research-topic">
-
-        <h2>Hilbert Space</h2>
-
-        <p>
-            Quantum states are represented as vectors
-            in a Hilbert space.
-        </p>
-
-    </div>
-
-</section>
-
-
-
-<!-- RELATIVITY -->
-
-<section id="relativity" class="page">
-
-    <button class="back-button"
-            onclick="showPage('physics')">
-        ← Back to Physics
-    </button>
-
-    <h1>Relativity</h1>
-
-    <p class="intro">
-        Space, time, motion and gravitation.
-    </p>
-
-
-    <div class="research-topic">
-
-        <h2>Mass-Energy Equivalence</h2>
-
-        <div class="equation">
-            $$E=mc^2$$
-        </div>
-
-    </div>
-
-
-    <div class="research-topic">
-
-        <h2>Lorentz Factor</h2>
-
-        <div class="equation">
-            $$
-            \gamma=
-            \frac{1}
-            {\sqrt{1-\frac{v^2}{c^2}}}
-            $$
-        </div>
-
-    </div>
-
-
-    <div class="research-topic">
-
-        <h2>Spacetime Interval</h2>
-
-        <div class="equation">
-            $$
-            ds^2=
-            -c^2dt^2+dx^2+dy^2+dz^2
-            $$
-        </div>
-
-    </div>
-
-</section>
-
-
-
-<!-- MATHEMATICAL PHYSICS -->
-
-<section id="mathematicalPhysics" class="page">
-
-    <button class="back-button"
-            onclick="showPage('physics')">
-        ← Back to Physics
-    </button>
-
-    <h1>Mathematical Physics</h1>
-
-    <p class="intro">
-        Mathematics used to formulate physical theories.
-    </p>
-
-
-    <div class="research-topic">
-
-        <h2>Differential Equations</h2>
-
-        <div class="equation">
-            $$
-            \frac{\partial u}{\partial t}
-            =
-            \alpha
-            \frac{\partial^2u}{\partial x^2}
-            $$
-        </div>
-
-    </div>
-
-
-    <div class="research-topic">
-
-        <h2>Wave Equation</h2>
-
-        <div class="equation">
-            $$
-            \frac{\partial^2u}{\partial t^2}
-            =
-            c^2
-            \frac{\partial^2u}{\partial x^2}
-            $$
-        </div>
-
-    </div>
-
-
-    <div class="research-topic">
-
-        <h2>Fourier Analysis</h2>
-
-        <div class="equation">
-            $$
-            f(x)
-            =
-            \sum_{n=-\infty}^{\infty}
-            c_n e^{inx}
-            $$
-        </div>
-
-    </div>
-
-</section>
-
-
-
-<!-- RESEARCH LAB -->
-
-<section id="research" class="page">
-
-    <button class="back-button"
-            onclick="showPage('home')">
-        ← Back
-    </button>
-
-    <h1>Research Laboratory</h1>
-
-    <p class="intro">
-        Write and save your research.
-    </p>
-
-
-    <div class="editor">
-
-        <label>Research title</label>
-
-        <input
-            id="researchTitle"
-            type="text"
-            placeholder="Enter research title..."
-        >
-
-
-        <label>Research field</label>
-
-        <select id="researchField">
-
-            <option>Mathematics</option>
-            <option>Physics</option>
-            <option>Classical Mechanics</option>
-            <option>Quantum Mechanics</option>
-            <option>Complex Analysis</option>
-            <option>Other</option>
-
-        </select>
-
-
-        <label>Research content</label>
-
-        <textarea
-            id="researchContent"
-            placeholder="Write your research here...
-
-Example:
+For mathematics:
 
 $$
 \frac{d}{dt}
@@ -880,57 +390,100 @@ $$
 $$
 
 Inline mathematics:
-$E=mc^2$"
-        ></textarea>
+
+$E=mc^2$
+
+Images:
+
+![Image](IMAGE_URL)
+
+Videos:
+
+[Video](VIDEO_URL)
+">
+                </textarea>
 
 
-        <div class="editor-buttons">
+                <div class="paper-preview-title">
+                    LIVE PREVIEW
+                </div>
 
-            <button class="save-button"
-                    onclick="saveResearch()">
-                💾 Save Research
+                <article
+                    id="paperPreview"
+                    class="paper-preview">
+                </article>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ================= RESEARCH HUB ================= -->
+
+        <section id="researchHubScreen"
+                 class="screen">
+
+            <div class="screen-header">
+
+                <button onclick="openHome()"
+                        class="back-button">
+                    ← Back
+                </button>
+
+                <div>
+
+                    <div class="screen-kicker">
+                        LABORATORY
+                    </div>
+
+                    <h1>
+                        Research
+                    </h1>
+
+                </div>
+
+            </div>
+
+
+            <button class="primary-button"
+                    onclick="newResearch()">
+                ＋ Create New Research
             </button>
 
-            <button onclick="clearEditor()">
-                Clear
-            </button>
 
-            <button onclick="showPage('home')">
-                ← Back
-            </button>
-
-        </div>
-
-    </div>
+            <h2 class="content-title">
+                All Projects
+            </h2>
 
 
-    <h2 class="section-title">
-        Saved Research
-    </h2>
+            <div id="allProjects"
+                 class="project-grid">
+            </div>
 
-    <div id="researchList"></div>
-
-</section>
+        </section>
 
 
-</main>
+    </main>
+
+</div>
 
 
 <footer>
 
-    <p>ADV RESEARCH</p>
+    <div>
+        ADV RESEARCH
+    </div>
 
-    <p>
-        Researcher & Programmer:
-        Yassine Bechir Dallel
-    </p>
+    <span>
+        Yassine Bechir Dallel — Researcher & Programmer
+    </span>
 
 </footer>
 
 
-<script src="script.js"></script>
+<script src="app.js"></script>
 
 </body>
-
 </html>
 ```
