@@ -1,587 +1,83 @@
 ```javascript
-let projects =
-    JSON.parse(
-        localStorage.getItem("advResearchProjects") || "[]"
-    );
-
-let currentScreen = "home";
-
-let previousScreen = "home";
-
-let currentBureau = null;
-
-let currentSubject = null;
-
-let currentProjectId = null;
+let researches = [];
 
 
-// =====================================
-// SUBJECT DATABASE
-// =====================================
+// LOAD SAVED RESEARCH
+function loadResearch() {
 
-const subjects = {
+    const saved =
+        localStorage.getItem("advResearch");
 
-    mathematics: {
+    if (saved) {
 
-        title: "Mathematics",
-
-        kicker: "MATHEMATICS BUREAU",
-
-        items: [
-
-            {
-                id: "calculus",
-                symbol: "∫",
-                title: "Calculus",
-                description:
-                    "Limits, derivatives, integrals, sequences and series."
-            },
-
-            {
-                id: "real-analysis",
-                symbol: "ℝ",
-                title: "Real Analysis",
-                description:
-                    "Rigorous study of functions, sequences, continuity and convergence."
-            },
-
-            {
-                id: "complex-analysis",
-                symbol: "ℂ",
-                title: "Complex Analysis",
-                description:
-                    "Complex functions, contour integration, residues and analytic functions."
-            },
-
-            {
-                id: "linear-algebra",
-                symbol: "A",
-                title: "Linear Algebra",
-                description:
-                    "Vector spaces, matrices, linear maps and eigenvalues."
-            }
-
-        ]
-
-    },
-
-
-    physics: {
-
-        title: "Physics",
-
-        kicker: "PHYSICS BUREAU",
-
-        items: [
-
-            {
-                id: "classical-mechanics",
-                symbol: "F",
-                title: "Classical Mechanics",
-                description:
-                    "Newtonian, Lagrangian and Hamiltonian mechanics."
-            },
-
-            {
-                id: "quantum-mechanics",
-                symbol: "ψ",
-                title: "Quantum Mechanics",
-                description:
-                    "Quantum states, operators, Hilbert spaces and dynamics."
-            },
-
-            {
-                id: "relativity",
-                symbol: "c",
-                title: "Relativity",
-                description:
-                    "Spacetime, Lorentz transformations and relativistic physics."
-            },
-
-            {
-                id: "mathematical-physics",
-                symbol: "∂",
-                title: "Mathematical Physics",
-                description:
-                    "Differential equations, Fourier analysis and mathematical structures."
-            }
-
-        ]
+        researches =
+            JSON.parse(saved);
 
     }
 
-};
-
-
-// =====================================
-// SCREEN CONTROL
-// =====================================
-
-function activateScreen(id) {
-
-    document
-        .querySelectorAll(".screen")
-        .forEach(
-            screen =>
-                screen.classList.remove("active")
-        );
-
-
-    const screen =
-        document.getElementById(id);
-
-
-    if (screen) {
-
-        screen.classList.add("active");
-
-    }
+    displayResearch();
 
 }
 
 
-// =====================================
-// HOME
-// =====================================
+// PAGE NAVIGATION
+function showPage(pageName) {
 
-function openHome() {
+    const pages =
+        document.querySelectorAll(".page");
 
-    previousScreen = currentScreen;
+    pages.forEach(page => {
 
-    currentScreen = "home";
-
-    activateScreen("homeScreen");
-
-}
-
-
-// =====================================
-// BUREAU
-// =====================================
-
-function openBureau(bureau) {
-
-    previousScreen = currentScreen;
-
-    currentBureau = bureau;
-
-    currentScreen = "bureau";
-
-    const data =
-        subjects[bureau];
-
-
-    document
-        .getElementById("bureauKicker")
-        .textContent =
-            data.kicker;
-
-
-    document
-        .getElementById("bureauTitle")
-        .textContent =
-            data.title;
-
-
-    const grid =
-        document.getElementById(
-            "subjectGrid"
-        );
-
-
-    grid.innerHTML = "";
-
-
-    data.items.forEach(item => {
-
-        const card =
-            document.createElement("div");
-
-
-        card.className =
-            "subject-card";
-
-
-        card.onclick =
-            function() {
-
-                openSubject(
-                    bureau,
-                    item.id
-                );
-
-            };
-
-
-        card.innerHTML = `
-
-            <div class="subject-symbol">
-                ${item.symbol}
-            </div>
-
-            <h2>
-                ${escapeHTML(item.title)}
-            </h2>
-
-            <p>
-                ${escapeHTML(item.description)}
-            </p>
-
-        `;
-
-
-        grid.appendChild(card);
+        page.classList.remove("active");
 
     });
 
 
-    activateScreen("bureauScreen");
+    const selected =
+        document.getElementById(pageName);
 
-}
+    if (selected) {
 
-
-// =====================================
-// SUBJECT
-// =====================================
-
-function openSubject(
-    bureau,
-    subjectId
-) {
-
-    previousScreen = currentScreen;
-
-    currentBureau = bureau;
-
-    currentSubject = subjectId;
-
-    currentScreen = "subject";
-
-
-    const data =
-        subjects[bureau];
-
-
-    const subject =
-        data.items.find(
-            item =>
-                item.id === subjectId
-        );
-
-
-    document
-        .getElementById("subjectKicker")
-        .textContent =
-            data.title.toUpperCase();
-
-
-    document
-        .getElementById("subjectTitle")
-        .textContent =
-            subject.title;
-
-
-    document
-        .getElementById("subjectDescription")
-        .textContent =
-            subject.description;
-
-
-    renderSubjectProjects();
-
-
-    activateScreen("subjectScreen");
-
-}
-
-
-// =====================================
-// SUBJECT PROJECTS
-// =====================================
-
-function renderSubjectProjects() {
-
-    const container =
-        document.getElementById(
-            "subjectProjects"
-        );
-
-
-    const matching =
-        projects.filter(
-            project =>
-                project.bureau === currentBureau &&
-                project.subject === currentSubject
-        );
-
-
-    container.innerHTML = "";
-
-
-    if (matching.length === 0) {
-
-        container.innerHTML = `
-
-            <div class="empty-projects">
-
-                No research projects yet.
-
-                <br><br>
-
-                Create your first research paper.
-
-            </div>
-
-        `;
-
-        return;
+        selected.classList.add("active");
 
     }
 
 
-    matching
-        .slice()
-        .reverse()
-        .forEach(project => {
-
-            container.appendChild(
-                createProjectCard(project)
-            );
-
-        });
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
 
 }
 
 
-// =====================================
-// PROJECT CARD
-// =====================================
-
-function createProjectCard(project) {
-
-    const card =
-        document.createElement("div");
-
-
-    card.className =
-        "project-card";
-
-
-    const date =
-        new Date(
-            project.updatedAt
-        ).toLocaleDateString();
-
-
-    card.innerHTML = `
-
-        <div>
-
-            <h3>
-                ${escapeHTML(
-                    project.title ||
-                    "Untitled Research"
-                )}
-            </h3>
-
-            <div class="project-meta">
-
-                ${escapeHTML(
-                    project.field
-                )}
-
-                •
-
-                ${date}
-
-            </div>
-
-        </div>
-
-        <button class="project-open">
-
-            Open Research →
-
-        </button>
-
-    `;
-
-
-    card
-        .querySelector(".project-open")
-        .onclick =
-            function() {
-
-                openProject(
-                    project.id
-                );
-
-            };
-
-
-    return card;
-
-}
-
-
-// =====================================
-// NEW RESEARCH
-// =====================================
-
-function newResearch() {
-
-    previousScreen =
-        currentScreen;
-
-
-    currentProjectId = null;
-
-
-    document
-        .getElementById("paperTitle")
-        .value = "";
-
-
-    document
-        .getElementById("paperContent")
-        .value = "";
-
-
-    document
-        .getElementById("paperField")
-        .textContent =
-            currentSubject
-                ? getSubjectName(
-                    currentBureau,
-                    currentSubject
-                )
-                : "General Research";
-
-
-    setPaperDate();
-
-
-    updatePreview();
-
-
-    currentScreen = "editor";
-
-
-    activateScreen("editorScreen");
-
-}
-
-
-// =====================================
-// NEW RESEARCH FOR SUBJECT
-// =====================================
-
-function newResearchForCurrentSubject() {
-
-    newResearch();
-
-}
-
-
-// =====================================
-// OPEN PROJECT
-// =====================================
-
-function openProject(id) {
-
-    const project =
-        projects.find(
-            item =>
-                item.id === id
-        );
-
-
-    if (!project) {
-
-        return;
-
-    }
-
-
-    previousScreen =
-        currentScreen;
-
-
-    currentProjectId =
-        project.id;
-
-
-    currentBureau =
-        project.bureau;
-
-
-    currentSubject =
-        project.subject;
-
-
-    document
-        .getElementById("paperTitle")
-        .value =
-            project.title;
-
-
-    document
-        .getElementById("paperContent")
-        .value =
-            project.content;
-
-
-    document
-        .getElementById("paperField")
-        .textContent =
-            project.field;
-
-
-    document
-        .getElementById("paperDate")
-        .textContent =
-            new Date(
-                project.createdAt
-            ).toLocaleDateString();
-
-
-    updatePreview();
-
-
-    currentScreen =
-        "editor";
-
-
-    activateScreen(
-        "editorScreen"
-    );
-
-}
-
-
-// =====================================
-// SAVE
-// =====================================
-
-function saveCurrentResearch() {
+// SAVE RESEARCH
+function saveResearch() {
 
     const title =
         document
-            .getElementById("paperTitle")
-            .value
-            .trim();
+        .getElementById("researchTitle")
+        .value
+        .trim();
+
+
+    const field =
+        document
+        .getElementById("researchField")
+        .value;
 
 
     const content =
         document
-            .getElementById("paperContent")
-            .value;
+        .getElementById("researchContent")
+        .value
+        .trim();
 
 
-    if (!title) {
+    if (!title || !content) {
 
         alert(
-            "Please enter a research title."
+            "Please enter a title and research content."
         );
 
         return;
@@ -589,545 +85,292 @@ function saveCurrentResearch() {
     }
 
 
-    const now =
-        Date.now();
+    const today =
+        new Date()
+        .toLocaleDateString();
 
 
-    if (currentProjectId) {
+    const research = {
 
-        const project =
-            projects.find(
-                item =>
-                    item.id ===
-                    currentProjectId
-            );
+        id: Date.now(),
 
+        title: title,
 
-        if (project) {
+        field: field,
 
-            project.title =
-                title;
+        author:
+            "Yassine Bechir Dallel",
 
-            project.content =
-                content;
+        date: today,
 
-            project.updatedAt =
-                now;
+        content: content
 
-        }
-
-    } else {
-
-        const field =
-            currentSubject
-                ? getSubjectName(
-                    currentBureau,
-                    currentSubject
-                )
-                : "General Research";
+    };
 
 
-        const project = {
-
-            id: now,
-
-            title: title,
-
-            content: content,
-
-            bureau:
-                currentBureau ||
-                "general",
-
-            subject:
-                currentSubject ||
-                "general",
-
-            field: field,
-
-            author:
-                "Yassine Bechir Dallel",
-
-            createdAt: now,
-
-            updatedAt: now
-
-        };
+    researches.push(research);
 
 
-        projects.push(project);
+    localStorage.setItem(
+        "advResearch",
+        JSON.stringify(researches)
+    );
 
 
-        currentProjectId =
-            project.id;
+    clearEditor();
 
-    }
-
-
-    saveProjects();
-
-
-    setPaperDate();
-
+    displayResearch();
 
     alert(
-        "Research saved successfully."
-    );
-
-
-    if (currentSubject) {
-
-        renderSubjectProjects();
-
-    }
-
-
-    renderAllProjects();
-
-}
-
-
-// =====================================
-// ALL RESEARCH
-// =====================================
-
-function openResearchHub() {
-
-    previousScreen =
-        currentScreen;
-
-    currentScreen =
-        "researchHub";
-
-
-    renderAllProjects();
-
-
-    activateScreen(
-        "researchHubScreen"
+        "Research saved successfully!"
     );
 
 }
 
 
-function renderAllProjects() {
+// CLEAR EDITOR
+function clearEditor() {
 
-    const container =
+    document
+        .getElementById("researchTitle")
+        .value = "";
+
+    document
+        .getElementById("researchContent")
+        .value = "";
+
+}
+
+
+// DISPLAY RESEARCH
+function displayResearch() {
+
+    const list =
         document.getElementById(
-            "allProjects"
+            "researchList"
         );
 
 
-    if (!container) {
+    const featured =
+        document.getElementById(
+            "featuredResearch"
+        );
+
+
+    list.innerHTML = "";
+
+    featured.innerHTML = "";
+
+
+    if (researches.length === 0) {
+
+        list.innerHTML =
+            "<p>No research saved yet.</p>";
+
+        featured.innerHTML =
+            "<p>No research published yet.</p>";
 
         return;
 
     }
 
 
-    container.innerHTML = "";
-
-
-    if (projects.length === 0) {
-
-        container.innerHTML = `
-
-            <div class="empty-projects">
-
-                No research projects yet.
-
-            </div>
-
-        `;
-
-        return;
-
-    }
-
-
-    projects
+    researches
         .slice()
         .reverse()
-        .forEach(project => {
+        .forEach(research => {
 
-            container.appendChild(
-                createProjectCard(project)
+
+            const item =
+                document.createElement(
+                    "div"
+                );
+
+
+            item.className =
+                "research-item";
+
+
+            item.innerHTML = `
+
+                <h3>
+                    ${escapeHTML(research.title)}
+                </h3>
+
+                <div class="research-meta">
+
+                    ${escapeHTML(research.field)}
+                    •
+                    ${escapeHTML(research.author)}
+                    •
+                    ${escapeHTML(research.date)}
+
+                </div>
+
+                <div class="research-content">
+
+                    ${escapeHTML(research.content)}
+
+                </div>
+
+                <button
+                    class="research-card-button"
+                    onclick="deleteResearch(${research.id})">
+
+                    Delete
+
+                </button>
+
+            `;
+
+
+            list.appendChild(item);
+
+
+            const featuredItem =
+                document.createElement(
+                    "div"
+                );
+
+
+            featuredItem.className =
+                "research-item";
+
+
+            featuredItem.innerHTML = `
+
+                <h3>
+                    ${escapeHTML(research.title)}
+                </h3>
+
+                <div class="research-meta">
+
+                    ${escapeHTML(research.field)}
+                    •
+                    ${escapeHTML(research.author)}
+                    •
+                    ${escapeHTML(research.date)}
+
+                </div>
+
+                <button
+                    onclick="openResearch(${research.id})">
+
+                    READ RESEARCH →
+
+                </button>
+
+            `;
+
+
+            featured.appendChild(
+                featuredItem
             );
 
         });
-
-}
-
-
-// =====================================
-// BACK
-// =====================================
-
-function goBack() {
-
-    if (
-        currentScreen ===
-        "editor"
-    ) {
-
-        if (currentSubject) {
-
-            openSubject(
-                currentBureau,
-                currentSubject
-            );
-
-        } else {
-
-            openResearchHub();
-
-        }
-
-        return;
-
-    }
-
-
-    if (
-        currentScreen ===
-        "subject"
-    ) {
-
-        openBureau(
-            currentBureau
-        );
-
-        return;
-
-    }
-
-
-    if (
-        currentScreen ===
-        "bureau"
-    ) {
-
-        openHome();
-
-        return;
-
-    }
-
-
-    openHome();
-
-}
-
-
-// =====================================
-// PAPER DATE
-// =====================================
-
-function setPaperDate() {
-
-    document
-        .getElementById("paperDate")
-        .textContent =
-            new Date()
-            .toLocaleDateString();
-
-}
-
-
-// =====================================
-// INSERT TEXT
-// =====================================
-
-function insertText(text) {
-
-    const textarea =
-        document.getElementById(
-            "paperContent"
-        );
-
-
-    const start =
-        textarea.selectionStart;
-
-
-    const end =
-        textarea.selectionEnd;
-
-
-    textarea.value =
-        textarea.value.substring(
-            0,
-            start
-        ) +
-
-        text +
-
-        textarea.value.substring(
-            end
-        );
-
-
-    textarea.focus();
-
-
-    textarea.selectionStart =
-        start + text.length;
-
-
-    textarea.selectionEnd =
-        start + text.length;
-
-
-    updatePreview();
-
-}
-
-
-// =====================================
-// LIVE PREVIEW
-// =====================================
-
-document
-    .addEventListener(
-        "input",
-        function(event) {
-
-            if (
-                event.target.id ===
-                "paperContent"
-            ) {
-
-                updatePreview();
-
-            }
-
-        }
-    );
-
-
-function updatePreview() {
-
-    const content =
-        document
-            .getElementById(
-                "paperContent"
-            )
-            .value;
-
-
-    const preview =
-        document
-            .getElementById(
-                "paperPreview"
-            );
-
-
-    preview.innerHTML =
-        renderResearchText(
-            content
-        );
 
 
     if (window.MathJax) {
 
-        MathJax.typesetPromise(
-            [preview]
-        );
+        MathJax.typesetPromise();
 
     }
 
 }
 
 
-// =====================================
-// BASIC RESEARCH RENDERER
-// =====================================
+// OPEN RESEARCH
+function openResearch(id) {
 
-function renderResearchText(text) {
-
-    let safe =
-        escapeHTML(text);
-
-
-    // Headings
-
-    safe =
-        safe.replace(
-            /^## (.*)$/gm,
-            "<h2>$1</h2>"
+    const research =
+        researches.find(
+            r => r.id === id
         );
 
 
-    // Images
+    if (!research) {
 
-    safe =
-        safe.replace(
-            /!\[Image\]\((.*?)\)/g,
-            function(match, url) {
-
-                return `
-                    <img
-                        src="${url}"
-                        alt="Research image"
-                    >
-                `;
-
-            }
-        );
-
-
-    // Videos
-
-    safe =
-        safe.replace(
-            /\[Video\]\((.*?)\)/g,
-            function(match, url) {
-
-                return `
-                    <video
-                        controls
-                        src="${url}">
-                    </video>
-                `;
-
-            }
-        );
-
-
-    // Links
-
-    safe =
-        safe.replace(
-            /\[([^\]]+)\]\((.*?)\)/g,
-            function(match, label, url) {
-
-                return `
-                    <a
-                        href="${url}"
-                        target="_blank"
-                        rel="noopener">
-
-                        ${label}
-
-                    </a>
-                `;
-
-            }
-        );
-
-
-    // Bold
-
-    safe =
-        safe.replace(
-            /\*\*(.*?)\*\*/g,
-            "<strong>$1</strong>"
-        );
-
-
-    // New lines
-
-    safe =
-        safe.replace(
-            /\n/g,
-            "<br>"
-        );
-
-
-    // Restore math delimiters
-
-    safe =
-        safe.replace(
-            /\\\$\\\$/g,
-            "$$"
-        );
-
-
-    return safe;
-
-}
-
-
-// =====================================
-// HELPERS
-// =====================================
-
-function getSubjectName(
-    bureau,
-    subjectId
-) {
-
-    const data =
-        subjects[bureau];
-
-
-    if (!data) {
-
-        return "General Research";
+        return;
 
     }
 
 
-    const subject =
-        data.items.find(
-            item =>
-                item.id === subjectId
-        );
+    showPage("research");
 
 
-    return subject
-        ? subject.title
-        : "General Research";
+    document
+        .getElementById(
+            "researchTitle"
+        )
+        .value =
+            research.title;
+
+
+    document
+        .getElementById(
+            "researchField"
+        )
+        .value =
+            research.field;
+
+
+    document
+        .getElementById(
+            "researchContent"
+        )
+        .value =
+            research.content;
 
 }
 
 
-function saveProjects() {
+// DELETE RESEARCH
+function deleteResearch(id) {
+
+    const confirmed =
+        confirm(
+            "Delete this research?"
+        );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+    researches =
+        researches.filter(
+            research =>
+                research.id !== id
+        );
+
 
     localStorage.setItem(
-        "advResearchProjects",
-        JSON.stringify(projects)
+        "advResearch",
+        JSON.stringify(researches)
     );
 
+
+    displayResearch();
+
 }
 
 
+// ESCAPE HTML
 function escapeHTML(text) {
 
-    return String(text)
+    return text
         .replace(/&/g, "&amp;")
-        .replace(
-            /</g,
-            "&lt;"
-        )
-        .replace(
-            />/g,
-            "&gt;"
-        )
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-        .replace(
-            /'/g,
-            "&#039;"
-        );
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 
 }
 
 
-// =====================================
-// INITIALIZATION
-// =====================================
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function() {
-
-        openHome();
-
-        renderAllProjects();
-
-    }
-);
+// START APPLICATION
+loadResearch();
 ```
