@@ -1,663 +1,798 @@
-```javascript
 // ============================================
-// ADV RESEARCH
-// Main application controller
+// ADV RESEARCH V2
 // ============================================
 
+let currentSection = "home";
+let previousSection = "home";
+
+let researchProjects =
+    JSON.parse(
+        localStorage.getItem("ADV_RESEARCH_PROJECTS") || "[]"
+    );
+
+let currentResearchId = null;
+
 
 // ============================================
-// PAGE NAVIGATION
+// NAVIGATION
 // ============================================
 
-function showPage(pageId) {
+function showScreen(id) {
 
-    // Hide every page
-    const pages =
-        document.querySelectorAll(".page");
+    document
+        .querySelectorAll(".screen")
+        .forEach(function(screen) {
 
-    pages.forEach(function(page) {
+            screen.classList.remove("active");
 
-        page.classList.remove("active");
+        });
 
-    });
+    const target =
+        document.getElementById(id);
 
+    if (target) {
 
-    // Show requested page
-    const page =
-        document.getElementById(pageId);
-
-    if (page) {
-
-        page.classList.add("active");
+        target.classList.add("active");
 
     }
 
-
-    // Refresh saved research when opening
-    // the research laboratory
-    if (pageId === "research") {
-
-        loadResearch();
-
-    }
-
-
-    // Refresh featured research on home
-    if (pageId === "home") {
-
-        loadFeaturedResearch();
-
-    }
-
-
-    // Scroll to top
     window.scrollTo({
         top: 0,
         behavior: "smooth"
     });
+}
+
+
+function openSection(section) {
+
+    previousSection =
+        currentSection;
+
+    currentSection =
+        section;
+
+    showScreen(section);
+
+    if (section === "research") {
+
+        showSavedResearch();
+
+    }
+}
+
+
+function goHome() {
+
+    previousSection =
+        currentSection;
+
+    currentSection =
+        "home";
+
+    showScreen("home");
 
 }
 
 
-// ============================================
-// MATHEMATICS TOOLS
-// ============================================
+function goBackFromTool() {
 
-function openMathTool(tool) {
+    showScreen(previousSection);
 
-    if (tool === "calculus") {
-
-        openToolPage(
-            "Calculus",
-            "Limits, derivatives, integrals and series.",
-            `
-                <h3>Calculus Tools</h3>
-
-                <div class="tool-box">
-
-                    <h4>Limits</h4>
-
-                    <p>
-                        Study limits, continuity and
-                        asymptotic behaviour.
-                    </p>
-
-                </div>
-
-                <div class="tool-box">
-
-                    <h4>Derivatives</h4>
-
-                    <p>
-                        Explore derivatives and rates
-                        of change.
-                    </p>
-
-                </div>
-
-                <div class="tool-box">
-
-                    <h4>Integrals</h4>
-
-                    <p>
-                        Work with definite, indefinite
-                        and improper integrals.
-                    </p>
-
-                </div>
-
-                <div class="tool-box">
-
-                    <h4>Series</h4>
-
-                    <p>
-                        Study sequences, power series
-                        and convergence.
-                    </p>
-
-                </div>
-            `
-        );
-
-        return;
-    }
-
-
-    if (tool === "real-analysis") {
-
-        openToolPage(
-            "Real Analysis",
-            "Rigorous mathematical analysis.",
-            `
-                <h3>Real Analysis Tools</h3>
-
-                <div class="tool-box">
-
-                    <h4>Sequences</h4>
-
-                    <p>
-                        Convergence, boundedness and
-                        subsequences.
-                    </p>
-
-                </div>
-
-                <div class="tool-box">
-
-                    <h4>Functions</h4>
-
-                    <p>
-                        Continuity, differentiability
-                        and properties of functions.
-                    </p>
-
-                </div>
-
-                <div class="tool-box">
-
-                    <h4>Series</h4>
-
-                    <p>
-                        Numerical series and convergence
-                        criteria.
-                    </p>
-
-                </div>
-            `
-        );
-
-        return;
-    }
-
-
-    if (tool === "complex-analysis") {
-
-        openToolPage(
-            "Complex Analysis",
-            "Complex functions, residues and contour integration.",
-            `
-                <h3>Complex Analysis Tools</h3>
-
-                <div class="tool-box">
-
-                    <h4>Complex Functions</h4>
-
-                    <p>
-                        Holomorphic functions,
-                        analytic functions and
-                        Cauchy-Riemann equations.
-                    </p>
-
-                </div>
-
-                <div class="tool-box">
-
-                    <h4>Contour Integrals</h4>
-
-                    <p>
-                        Study complex integration
-                        along curves and contours.
-                    </p>
-
-                </div>
-
-                <div class="tool-box">
-
-                    <h4>Residues</h4>
-
-                    <p>
-                        Laurent series, isolated
-                        singularities and residue calculus.
-                    </p>
-
-                </div>
-
-                <div class="tool-box">
-
-                    <h4>Research Workspace</h4>
-
-                    <p>
-                        Write and save your own
-                        complex-analysis research.
-                    </p>
-
-                    <button
-                        onclick="openResearchWithField('Complex Analysis')">
-
-                        Open Research Workspace
-
-                    </button>
-
-                </div>
-            `
-        );
-
-        return;
-    }
-
-
-    if (tool === "linear-algebra") {
-
-        openToolPage(
-            "Linear Algebra",
-            "Vector spaces, matrices, eigenvalues and operators.",
-            `
-                <h3>Linear Algebra Tools</h3>
-
-                <div class="tool-box">
-
-                    <h4>Vector Spaces</h4>
-
-                    <p>
-                        Explore vector spaces,
-                        subspaces and bases.
-                    </p>
-
-                </div>
-
-                <div class="tool-box">
-
-                    <h4>Matrices</h4>
-
-                    <p>
-                        Matrix operations,
-                        determinants and inverses.
-                    </p>
-
-                </div>
-
-                <div class="tool-box">
-
-                    <h4>Eigenvalues</h4>
-
-                    <p>
-                        Eigenvalues, eigenvectors
-                        and diagonalization.
-                    </p>
-
-                </div>
-            `
-        );
-
-    }
-
+    currentSection =
+        previousSection;
 }
 
 
 // ============================================
-// PHYSICS TOOLS
+// TOOL DATABASE
 // ============================================
 
-function openPhysicsTool(tool) {
+const toolData = {
 
-    if (tool === "classical-mechanics") {
+    "Calculus": {
 
-        openToolPage(
-            "Classical Mechanics",
-            "Newtonian, Lagrangian and Hamiltonian mechanics.",
-            `
-                <h3>Classical Mechanics Tools</h3>
+        category: "MATHEMATICS / ANALYSIS",
 
-                <div class="tool-box">
+        symbol: "∫",
 
-                    <h4>Newtonian Mechanics</h4>
+        description:
+            "The mathematical study of change, accumulation and infinite processes.",
 
-                    <p>
-                        Forces, momentum and Newton's laws.
-                    </p>
+        boxes: [
 
-                </div>
+            [
+                "Limits",
+                "Study limiting behaviour and continuity.",
+                "$$\\lim_{x\\to a}f(x)$$"
+            ],
 
-                <div class="tool-box">
+            [
+                "Derivatives",
+                "Study rates of change and tangent behaviour.",
+                "$$f'(x)=\\lim_{h\\to0}\\frac{f(x+h)-f(x)}{h}$$"
+            ],
 
-                    <h4>Lagrangian Mechanics</h4>
+            [
+                "Integrals",
+                "Study accumulation and areas.",
+                "$$\\int_a^b f(x)\\,dx$$"
+            ]
 
-                    <p>
-                        Generalized coordinates,
-                        Lagrangian and Euler-Lagrange equations.
-                    </p>
+        ]
 
-                    <button
-                        onclick="openResearchWithField('Lagrangian Mechanics')">
+    },
 
-                        Research Lagrangian Mechanics
 
-                    </button>
+    "Real Analysis": {
 
-                </div>
+        category: "MATHEMATICS / ANALYSIS",
 
-                <div class="tool-box">
+        symbol: "ℝ",
 
-                    <h4>Hamiltonian Mechanics</h4>
+        description:
+            "Rigorous analysis of real-valued functions and sequences.",
 
-                    <p>
-                        Hamiltonian dynamics,
-                        canonical coordinates and phase space.
-                    </p>
+        boxes: [
 
-                </div>
-            `
-        );
+            [
+                "Sequences",
+                "Convergence, boundedness and subsequences.",
+                "$$a_n\\to L$$"
+            ],
 
-        return;
+            [
+                "Continuity",
+                "Rigorous study of continuous functions.",
+                "$$\\lim_{x\\to a}f(x)=f(a)$$"
+            ],
+
+            [
+                "Convergence",
+                "Study convergence of sequences and series.",
+                "$$\\sum_{n=1}^{\\infty}a_n$$"
+            ]
+
+        ]
+
+    },
+
+
+    "Complex Analysis": {
+
+        category: "MATHEMATICS / ANALYSIS",
+
+        symbol: "ℂ",
+
+        description:
+            "The theory of functions of a complex variable.",
+
+        boxes: [
+
+            [
+                "Holomorphic Functions",
+                "Study complex differentiability and analytic functions.",
+                "$$f'(z)=\\lim_{h\\to0}\\frac{f(z+h)-f(z)}{h}$$"
+            ],
+
+            [
+                "Contour Integrals",
+                "Integrate complex functions along paths.",
+                "$$\\int_\\gamma f(z)\\,dz$$"
+            ],
+
+            [
+                "Residues",
+                "Use isolated singularities and residues.",
+                "$$\\operatorname{Res}(f,z_0)$$"
+            ]
+
+        ]
+
+    },
+
+
+    "Topology": {
+
+        category: "MATHEMATICS / PURE MATHEMATICS",
+
+        symbol: "T",
+
+        description:
+            "The study of spaces, continuity and properties preserved by deformation.",
+
+        boxes: [
+
+            [
+                "Open Sets",
+                "Study neighbourhoods and open subsets.",
+                "$$U\\subseteq X$$"
+            ],
+
+            [
+                "Closed Sets",
+                "Study closed subsets and limit points.",
+                "$$\\overline{A}=A$$"
+            ],
+
+            [
+                "Continuity",
+                "Study continuous mappings between spaces.",
+                "$$f:X\\to Y$$"
+            ]
+
+        ]
+
+    },
+
+
+    "Vector Calculus": {
+
+        category: "MATHEMATICS / CALCULUS",
+
+        symbol: "∇",
+
+        description:
+            "Calculus of scalar and vector fields.",
+
+        boxes: [
+
+            [
+                "Gradient",
+                "Direction of greatest increase.",
+                "$$\\nabla f$$"
+            ],
+
+            [
+                "Divergence",
+                "Measure of local field expansion.",
+                "$$\\nabla\\cdot\\mathbf F$$"
+            ],
+
+            [
+                "Curl",
+                "Measure of local rotation.",
+                "$$\\nabla\\times\\mathbf F$$"
+            ]
+
+        ]
+
+    },
+
+
+    "Linear Algebra": {
+
+        category: "MATHEMATICS / ALGEBRA",
+
+        symbol: "A",
+
+        description:
+            "Vector spaces, linear transformations and operators.",
+
+        boxes: [
+
+            [
+                "Vector Spaces",
+                "Study vectors, bases and subspaces.",
+                "$$V\\text{ over }\\mathbb R$$"
+            ],
+
+            [
+                "Matrices",
+                "Study matrix transformations and operations.",
+                "$$AB$$"
+            ],
+
+            [
+                "Eigenvalues",
+                "Study eigenvectors and invariant directions.",
+                "$$A\\mathbf v=\\lambda\\mathbf v$$"
+            ]
+
+        ]
+
+    },
+
+
+    "Sequences & Series": {
+
+        category: "MATHEMATICS / ANALYSIS",
+
+        symbol: "Σ",
+
+        description:
+            "Infinite sequences, sums and convergence.",
+
+        boxes: [
+
+            [
+                "Sequences",
+                "Study ordered infinite collections.",
+                "$$a_1,a_2,a_3,\\ldots$$"
+            ],
+
+            [
+                "Series",
+                "Study infinite sums.",
+                "$$\\sum_{n=1}^{\\infty}a_n$$"
+            ],
+
+            [
+                "Power Series",
+                "Study expansions around a point.",
+                "$$\\sum_{n=0}^{\\infty}a_n(x-x_0)^n$$"
+            ]
+
+        ]
+
+    },
+
+
+    "Differential Equations": {
+
+        category: "MATHEMATICS / ANALYSIS",
+
+        symbol: "∂",
+
+        description:
+            "Equations involving unknown functions and their derivatives.",
+
+        boxes: [
+
+            [
+                "ODE",
+                "Ordinary differential equations.",
+                "$$y'=f(x,y)$$"
+            ],
+
+            [
+                "PDE",
+                "Partial differential equations.",
+                "$$\\frac{\\partial u}{\\partial t}$$"
+            ],
+
+            [
+                "Wave Equation",
+                "A fundamental equation of mathematical physics.",
+                "$$\\frac{\\partial^2u}{\\partial t^2}=c^2\\nabla^2u$$"
+            ]
+
+        ]
+
+    },
+
+
+    "Classical Mechanics": {
+
+        category: "PHYSICS / MECHANICS",
+
+        symbol: "F",
+
+        description:
+            "The mathematical description of motion and forces.",
+
+        boxes: [
+
+            [
+                "Newtonian Mechanics",
+                "Forces and equations of motion.",
+                "$$\\mathbf F=m\\mathbf a$$"
+            ],
+
+            [
+                "Momentum",
+                "Linear momentum and conservation.",
+                "$$\\mathbf p=m\\mathbf v$$"
+            ],
+
+            [
+                "Dynamics",
+                "Motion under applied forces.",
+                "$$\\mathbf F=\\frac{d\\mathbf p}{dt}$$"
+            ]
+
+        ]
+
+    },
+
+
+    "Lagrangian Mechanics": {
+
+        category: "PHYSICS / CLASSICAL MECHANICS",
+
+        symbol: "L",
+
+        description:
+            "A formulation of mechanics based on the Lagrangian and stationary action.",
+
+        boxes: [
+
+            [
+                "Lagrangian",
+                "Difference between kinetic and potential energy.",
+                "$$L=T-V$$"
+            ],
+
+            [
+                "Euler-Lagrange",
+                "Equations governing generalized coordinates.",
+                "$$\\frac{d}{dt}\\left(\\frac{\\partial L}{\\partial\\dot q_i}\\right)-\\frac{\\partial L}{\\partial q_i}=0$$"
+            ],
+
+            [
+                "Action",
+                "The principle of stationary action.",
+                "$$S=\\int L\\,dt$$"
+            ]
+
+        ]
+
+    },
+
+
+    "Hamiltonian Mechanics": {
+
+        category: "PHYSICS / CLASSICAL MECHANICS",
+
+        symbol: "H",
+
+        description:
+            "Hamiltonian formulation using phase-space variables.",
+
+        boxes: [
+
+            [
+                "Hamiltonian",
+                "Energy function in phase space.",
+                "$$H=\\sum_i p_i\\dot q_i-L$$"
+            ],
+
+            [
+                "Hamilton Equations",
+                "Canonical equations of motion.",
+                "$$\\dot q_i=\\frac{\\partial H}{\\partial p_i}$$"
+            ],
+
+            [
+                "Phase Space",
+                "State of a system in position-momentum space.",
+                "$$(q_i,p_i)$$"
+            ]
+
+        ]
+
+    },
+
+
+    "Quantum Mechanics": {
+
+        category: "PHYSICS / QUANTUM THEORY",
+
+        symbol: "ψ",
+
+        description:
+            "The mathematical framework describing quantum systems.",
+
+        boxes: [
+
+            [
+                "Schrödinger Equation",
+                "Time evolution of a quantum state.",
+                "$$i\\hbar\\frac{\\partial\\psi}{\\partial t}=\\hat H\\psi$$"
+            ],
+
+            [
+                "Operators",
+                "Observables represented by operators.",
+                "$$\\hat A\\psi=a\\psi$$"
+            ],
+
+            [
+                "Hilbert Spaces",
+                "The vector-space structure of quantum states.",
+                "$$\\langle\\phi|\\psi\\rangle$$"
+            ]
+
+        ]
+
+    },
+
+
+    "Relativity": {
+
+        category: "PHYSICS / RELATIVITY",
+
+        symbol: "c",
+
+        description:
+            "Spacetime, Lorentz symmetry and relativistic physics.",
+
+        boxes: [
+
+            [
+                "Spacetime",
+                "Events represented in four-dimensional spacetime.",
+                "$$x^\\mu=(ct,x,y,z)$$"
+            ],
+
+            [
+                "Lorentz Transformations",
+                "Transform coordinates between inertial frames.",
+                "$$x'^\\mu=\\Lambda^\\mu_{\\ \\nu}x^\\nu$$"
+            ],
+
+            [
+                "Energy-Momentum",
+                "Relativistic energy and momentum.",
+                "$$E^2=p^2c^2+m^2c^4$$"
+            ]
+
+        ]
+
+    },
+
+
+    "Mathematical Physics": {
+
+        category: "PHYSICS / MATHEMATICAL PHYSICS",
+
+        symbol: "∂",
+
+        description:
+            "Mathematical structures used to formulate physical theories.",
+
+        boxes: [
+
+            [
+                "Differential Equations",
+                "Equations describing physical systems.",
+                "$$\\mathcal L[u]=0$$"
+            ],
+
+            [
+                "Fourier Analysis",
+                "Represent functions using frequencies.",
+                "$$f(x)=\\sum_n c_ne^{inx}$$"
+            ],
+
+            [
+                "Operators",
+                "Linear operators used throughout physics.",
+                "$$A:V\\to V$$"
+            ]
+
+        ]
+
+    },
+
+
+    "Field Theory": {
+
+        category: "PHYSICS / THEORETICAL PHYSICS",
+
+        symbol: "Ω",
+
+        description:
+            "Fields, actions, symmetries and fundamental interactions.",
+
+        boxes: [
+
+            [
+                "Fields",
+                "Functions assigning physical quantities to spacetime.",
+                "$$\\phi(x)$$"
+            ],
+
+            [
+                "Action",
+                "Dynamics derived from an action principle.",
+                "$$S=\\int\\mathcal L\\,d^4x$$"
+            ],
+
+            [
+                "Symmetry",
+                "Symmetries and conserved quantities.",
+                "$$\\delta S=0$$"
+            ]
+
+        ]
+
+    },
+
+
+    "Statistical Physics": {
+
+        category: "PHYSICS / STATISTICAL MECHANICS",
+
+        symbol: "Z",
+
+        description:
+            "Microscopic states, probability and macroscopic physics.",
+
+        boxes: [
+
+            [
+                "Partition Function",
+                "Central quantity of statistical mechanics.",
+                "$$Z=\\sum_i e^{-\\beta E_i}$$"
+            ],
+
+            [
+                "Entropy",
+                "Measure associated with microscopic states.",
+                "$$S=k_B\\ln\\Omega$$"
+            ],
+
+            [
+                "Ensembles",
+                "Statistical descriptions of physical systems.",
+                "$$\\langle A\\rangle$$"
+            ]
+
+        ]
+
     }
 
-
-    if (tool === "quantum-mechanics") {
-
-        openToolPage(
-            "Quantum Mechanics",
-            "Schrödinger equation, operators and Hilbert spaces.",
-            `
-                <h3>Quantum Mechanics Tools</h3>
-
-                <div class="tool-box">
-
-                    <h4>Schrödinger Equation</h4>
-
-                    <p>
-                        Study time-dependent and
-                        time-independent quantum dynamics.
-                    </p>
-
-                </div>
-
-                <div class="tool-box">
-
-                    <h4>Operators</h4>
-
-                    <p>
-                        Position, momentum, Hamiltonian
-                        and observable operators.
-                    </p>
-
-                </div>
-
-                <div class="tool-box">
-
-                    <h4>Hilbert Spaces</h4>
-
-                    <p>
-                        Quantum states, inner products
-                        and vector spaces.
-                    </p>
-
-                </div>
-            `
-        );
-
-        return;
-    }
-
-
-    if (tool === "relativity") {
-
-        openToolPage(
-            "Relativity",
-            "Special relativity, spacetime and relativistic dynamics.",
-            `
-                <h3>Relativity Tools</h3>
-
-                <div class="tool-box">
-
-                    <h4>Spacetime</h4>
-
-                    <p>
-                        Events, intervals and Minkowski spacetime.
-                    </p>
-
-                </div>
-
-                <div class="tool-box">
-
-                    <h4>Lorentz Transformations</h4>
-
-                    <p>
-                        Transform coordinates between
-                        inertial reference frames.
-                    </p>
-
-                </div>
-
-                <div class="tool-box">
-
-                    <h4>Relativistic Dynamics</h4>
-
-                    <p>
-                        Relativistic momentum,
-                        energy and mass-energy relations.
-                    </p>
-
-                </div>
-            `
-        );
-
-        return;
-    }
-
-
-    if (tool === "mathematical-physics") {
-
-        openToolPage(
-            "Mathematical Physics",
-            "Mathematics used to formulate physical theories.",
-            `
-                <h3>Mathematical Physics Tools</h3>
-
-                <div class="tool-box">
-
-                    <h4>Differential Equations</h4>
-
-                    <p>
-                        ODEs and PDEs appearing
-                        in physical systems.
-                    </p>
-
-                </div>
-
-                <div class="tool-box">
-
-                    <h4>Fourier Analysis</h4>
-
-                    <p>
-                        Fourier series, transforms
-                        and wave analysis.
-                    </p>
-
-                </div>
-
-                <div class="tool-box">
-
-                    <h4>Mathematical Structures</h4>
-
-                    <p>
-                        Vector spaces, operators,
-                        tensors and mathematical models.
-                    </p>
-
-                </div>
-            `
-        );
-
-    }
-
-}
+};
 
 
 // ============================================
-// TOOL PAGE
+// OPEN TOOL
 // ============================================
 
-function openToolPage(
-    title,
-    description,
-    content
-) {
+function openTool(name) {
 
-    const existing =
+    const data =
+        toolData[name];
+
+    if (!data) {
+
+        return;
+
+    }
+
+    previousSection =
+        currentSection;
+
+    currentSection =
+        "tool";
+
+    document
+        .getElementById("tool-symbol")
+        .textContent =
+            data.symbol;
+
+    document
+        .getElementById("tool-category")
+        .textContent =
+            data.category;
+
+    document
+        .getElementById("tool-title")
+        .textContent =
+            name;
+
+    document
+        .getElementById("tool-description")
+        .textContent =
+            data.description;
+
+
+    const content =
         document.getElementById(
-            "dynamicToolPage"
+            "tool-content"
         );
 
-
-    if (existing) {
-
-        existing.remove();
-
-    }
+    content.innerHTML = "";
 
 
-    const section =
-        document.createElement("section");
+    data.boxes.forEach(function(box) {
+
+        const div =
+            document.createElement("div");
+
+        div.className =
+            "tool-box";
+
+        div.innerHTML = `
+            <h3>${box[0]}</h3>
+
+            <p>
+                ${box[1]}
+            </p>
+
+            <div class="formula">
+                ${box[2]}
+            </div>
+        `;
+
+        content.appendChild(div);
+
+    });
 
 
-    section.id =
-        "dynamicToolPage";
-
-
-    section.className =
-        "page active";
-
-
-    section.innerHTML = `
-
-        <button
-            class="back-button"
-            onclick="closeToolPage()">
-
-            ← Back
-
-        </button>
-
-        <h1>
-            ${title}
-        </h1>
-
-        <p class="intro">
-            ${description}
-        </p>
-
-        <div class="dynamic-tools">
-
-            ${content}
-
-        </div>
-
-    `;
-
-
-    document
-        .querySelector("main")
-        .appendChild(section);
-
-
-    // Hide normal pages
-    document
-        .querySelectorAll(
-            "main > .page:not(#dynamicToolPage)"
-        )
-        .forEach(function(page) {
-
-            page.classList.remove(
-                "active"
-            );
-
-        });
+    showScreen("tool");
 
 
     if (window.MathJax) {
 
         MathJax.typesetPromise([
-            section
+            content
         ]);
 
     }
 
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-
 }
 
 
 // ============================================
-// CLOSE TOOL PAGE
+// RESEARCH
 // ============================================
 
-function closeToolPage() {
+function newResearch() {
 
-    const page =
-        document.getElementById(
-            "dynamicToolPage"
-        );
+    currentResearchId =
+        null;
+
+    document
+        .getElementById(
+            "research-title"
+        )
+        .value = "";
+
+    document
+        .getElementById(
+            "research-content"
+        )
+        .value = "";
+
+    document
+        .getElementById(
+            "research-field-display"
+        )
+        .textContent =
+            "General Research";
+
+    document
+        .getElementById(
+            "research-date"
+        )
+        .textContent =
+            new Date().toLocaleDateString();
 
 
-    if (page) {
+    updatePreview();
 
-        page.remove();
-
-    }
-
-
-    showPage("home");
+    showScreen("editor");
 
 }
 
 
-// ============================================
-// RESEARCH WORKSPACE
-// ============================================
+function closeEditor() {
 
-function openResearchWithField(field) {
+    showScreen("research");
 
-    showPage("research");
+    currentSection =
+        "research";
 
-
-    const select =
-        document.getElementById(
-            "researchField"
-        );
-
-
-    if (select) {
-
-        select.value =
-            field;
-
-    }
+    showSavedResearch();
 
 }
 
-
-// ============================================
-// SAVE RESEARCH
-// ============================================
 
 function saveResearch() {
 
     const title =
         document
             .getElementById(
-                "researchTitle"
+                "research-title"
             )
             .value
             .trim();
 
-
-    const field =
-        document
-            .getElementById(
-                "researchField"
-            )
-            .value;
-
-
     const content =
         document
             .getElementById(
-                "researchContent"
+                "research-content"
             )
             .value;
 
@@ -673,35 +808,61 @@ function saveResearch() {
     }
 
 
-    const savedResearch =
-        JSON.parse(
-            localStorage.getItem(
-                "advResearch"
-            ) || "[]"
-        );
+    const now =
+        new Date().toISOString();
 
 
-    savedResearch.push({
+    if (currentResearchId === null) {
 
-        title: title,
+        const project = {
 
-        field: field,
+            id: Date.now(),
 
-        content: content,
+            title: title,
 
-        author:
-            "Yassine Bechir Dallel",
+            content: content,
 
-        date:
-            new Date().toLocaleDateString()
+            author:
+                "Yassine Bechir Dallel",
 
-    });
+            date: now
+
+        };
+
+        researchProjects.push(project);
+
+        currentResearchId =
+            project.id;
+
+    } else {
+
+        const project =
+            researchProjects.find(
+                item =>
+                    item.id ===
+                    currentResearchId
+            );
+
+        if (project) {
+
+            project.title =
+                title;
+
+            project.content =
+                content;
+
+            project.date =
+                now;
+
+        }
+
+    }
 
 
     localStorage.setItem(
-        "advResearch",
+        "ADV_RESEARCH_PROJECTS",
         JSON.stringify(
-            savedResearch
+            researchProjects
         )
     );
 
@@ -711,57 +872,45 @@ function saveResearch() {
     );
 
 
-    loadResearch();
-
-    clearEditor();
+    showSavedResearch();
 
 }
 
 
 // ============================================
-// LOAD RESEARCH
+// SAVED RESEARCH
 // ============================================
 
-function loadResearch() {
+function showSavedResearch() {
 
-    const container =
+    const area =
         document.getElementById(
-            "researchList"
+            "research-area"
         );
 
-
-    if (!container) {
+    if (!area) {
 
         return;
 
     }
 
 
-    const savedResearch =
-        JSON.parse(
-            localStorage.getItem(
-                "advResearch"
-            ) || "[]"
-        );
-
-
-    container.innerHTML = "";
+    area.innerHTML = "";
 
 
     if (
-        savedResearch.length === 0
+        researchProjects.length === 0
     ) {
 
-        container.innerHTML = `
-
-            <div class="research-item">
+        area.innerHTML = `
+            <div class="saved-research">
+                <h3>No research yet</h3>
 
                 <p>
-                    No saved research yet.
+                    Your research projects
+                    will appear here.
                 </p>
-
             </div>
-
         `;
 
         return;
@@ -769,189 +918,353 @@ function loadResearch() {
     }
 
 
-    savedResearch
+    researchProjects
         .slice()
         .reverse()
-        .forEach(function(item) {
+        .forEach(function(project) {
 
             const div =
-                document.createElement(
-                    "div"
-                );
-
+                document.createElement("div");
 
             div.className =
-                "research-item";
+                "saved-research";
 
+            const date =
+                new Date(
+                    project.date
+                ).toLocaleDateString();
 
             div.innerHTML = `
 
                 <h3>
                     ${escapeHTML(
-                        item.title
+                        project.title
                     )}
                 </h3>
 
                 <p>
-                    <strong>
-                        Field:
-                    </strong>
-
+                    Author:
                     ${escapeHTML(
-                        item.field
+                        project.author
                     )}
                 </p>
 
                 <p>
-                    <strong>
-                        Author:
-                    </strong>
-
-                    ${escapeHTML(
-                        item.author
-                    )}
+                    Date:
+                    ${date}
                 </p>
 
-                <p>
-                    <strong>
-                        Date:
-                    </strong>
+                <button
+                    onclick="openResearch(
+                        ${project.id}
+                    )">
 
-                    ${escapeHTML(
-                        item.date
-                    )}
-                </p>
+                    OPEN PROJECT
 
-                <div class="saved-content">
+                </button>
 
-                    ${escapeHTML(
-                        item.content
-                    )}
+                <button
+                    onclick="deleteResearch(
+                        ${project.id}
+                    )">
 
-                </div>
+                    DELETE
 
+                </button>
             `;
 
-
-            container.appendChild(div);
+            area.appendChild(div);
 
         });
 
 }
 
 
-// ============================================
-// FEATURED RESEARCH
-// ============================================
+function openResearch(id) {
 
-function loadFeaturedResearch() {
-
-    const container =
-        document.getElementById(
-            "featuredResearch"
+    const project =
+        researchProjects.find(
+            item =>
+                item.id === id
         );
 
-
-    if (!container) {
+    if (!project) {
 
         return;
 
     }
 
 
-    const savedResearch =
-        JSON.parse(
-            localStorage.getItem(
-                "advResearch"
-            ) || "[]"
+    currentResearchId =
+        id;
+
+
+    document
+        .getElementById(
+            "research-title"
+        )
+        .value =
+            project.title;
+
+
+    document
+        .getElementById(
+            "research-content"
+        )
+        .value =
+            project.content;
+
+
+    document
+        .getElementById(
+            "research-field-display"
+        )
+        .textContent =
+            "Research";
+
+
+    document
+        .getElementById(
+            "research-date"
+        )
+        .textContent =
+            new Date(
+                project.date
+            ).toLocaleDateString();
+
+
+    updatePreview();
+
+    showScreen("editor");
+
+}
+
+
+function deleteResearch(id) {
+
+    const confirmed =
+        confirm(
+            "Delete this research?"
         );
 
-
-    if (
-        savedResearch.length === 0
-    ) {
-
-        container.innerHTML = `
-
-            <div class="research-item">
-
-                <p>
-                    Your saved research
-                    will appear here.
-                </p>
-
-            </div>
-
-        `;
+    if (!confirmed) {
 
         return;
 
     }
 
 
-    const latest =
-        savedResearch[
-            savedResearch.length - 1
-        ];
+    researchProjects =
+        researchProjects.filter(
+            item =>
+                item.id !== id
+        );
 
 
-    container.innerHTML = `
+    localStorage.setItem(
+        "ADV_RESEARCH_PROJECTS",
+        JSON.stringify(
+            researchProjects
+        )
+    );
 
-        <div class="research-item">
 
-            <h3>
-                ${escapeHTML(
-                    latest.title
-                )}
-            </h3>
-
-            <p>
-                ${escapeHTML(
-                    latest.field
-                )}
-            </p>
-
-            <p>
-                ${escapeHTML(
-                    latest.date
-                )}
-            </p>
-
-        </div>
-
-    `;
+    showSavedResearch();
 
 }
 
 
 // ============================================
-// CLEAR EDITOR
+// PAPER TOOLS
 // ============================================
 
-function clearEditor() {
+function insertHeading() {
 
-    const title =
-        document.getElementById(
-            "researchTitle"
+    insertAtCursor(
+        "\n\n## Research Section\n\n"
+    );
+
+}
+
+
+function insertBold() {
+
+    insertAtCursor(
+        "**bold text**"
+    );
+
+}
+
+
+function insertEquation() {
+
+    insertAtCursor(
+        "\n\n$$\n\n\\boxed{}\n\n$$\n\n"
+    );
+
+}
+
+
+function insertImage() {
+
+    const url =
+        prompt(
+            "Enter the image URL:"
         );
 
+    if (!url) {
+
+        return;
+
+    }
+
+
+    insertAtCursor(
+        `\n\n![Research Image](${url})\n\n`
+    );
+
+}
+
+
+function insertVideo() {
+
+    const url =
+        prompt(
+            "Enter the video URL:"
+        );
+
+    if (!url) {
+
+        return;
+
+    }
+
+
+    insertAtCursor(
+        `\n\n[Research Video](${url})\n\n`
+    );
+
+}
+
+
+function insertAtCursor(text) {
+
+    const textarea =
+        document.getElementById(
+            "research-content"
+        );
+
+    const start =
+        textarea.selectionStart;
+
+    const end =
+        textarea.selectionEnd;
+
+
+    textarea.value =
+        textarea.value.substring(
+            0,
+            start
+        ) +
+        text +
+        textarea.value.substring(
+            end
+        );
+
+
+    textarea.focus();
+
+    textarea.selectionStart =
+        start + text.length;
+
+    textarea.selectionEnd =
+        start + text.length;
+
+
+    updatePreview();
+
+}
+
+
+// ============================================
+// PREVIEW
+// ============================================
+
+document.addEventListener(
+    "input",
+    function(event) {
+
+        if (
+            event.target.id ===
+            "research-content"
+        ) {
+
+            updatePreview();
+
+        }
+
+    }
+);
+
+
+function updatePreview() {
 
     const content =
-        document.getElementById(
-            "researchContent"
+        document
+            .getElementById(
+                "research-content"
+            )
+            .value;
+
+
+    const preview =
+        document
+            .getElementById(
+                "research-preview"
+            );
+
+
+    let html =
+        escapeHTML(content);
+
+
+    html =
+        html.replace(
+            /^## (.*)$/gm,
+            "<h2>$1</h2>"
         );
 
 
-    if (title) {
+    html =
+        html.replace(
+            /\*\*(.*?)\*\*/g,
+            "<strong>$1</strong>"
+        );
 
-        title.value = "";
 
-    }
+    html =
+        html.replace(
+            /!\[.*?\]\((.*?)\)/g,
+            '<img src="$1" alt="Research Image">'
+        );
 
 
-    if (content) {
+    html =
+        html.replace(
+            /\n/g,
+            "<br>"
+        );
 
-        content.value = "";
+
+    preview.innerHTML =
+        html;
+
+
+    if (window.MathJax) {
+
+        MathJax.typesetPromise([
+            preview
+        ]);
 
     }
 
@@ -959,7 +1272,7 @@ function clearEditor() {
 
 
 // ============================================
-// SECURITY HELPER
+// SECURITY
 // ============================================
 
 function escapeHTML(text) {
@@ -995,151 +1308,14 @@ function escapeHTML(text) {
 
 
 // ============================================
-// CONNECT THE EXISTING TOPIC BUTTONS
+// START APP
 // ============================================
 
 document.addEventListener(
     "DOMContentLoaded",
     function() {
 
-
-        // ============================
-        // MATHEMATICS
-        // ============================
-
-        const mathTopics =
-            document.querySelectorAll(
-                "#mathematics .topic"
-            );
-
-
-        if (mathTopics[0]) {
-
-            mathTopics[0].onclick =
-                function() {
-
-                    openMathTool(
-                        "calculus"
-                    );
-
-                };
-
-        }
-
-
-        if (mathTopics[1]) {
-
-            mathTopics[1].onclick =
-                function() {
-
-                    openMathTool(
-                        "real-analysis"
-                    );
-
-                };
-
-        }
-
-
-        if (mathTopics[2]) {
-
-            mathTopics[2].onclick =
-                function() {
-
-                    openMathTool(
-                        "complex-analysis"
-                    );
-
-                };
-
-        }
-
-
-        if (mathTopics[3]) {
-
-            mathTopics[3].onclick =
-                function() {
-
-                    openMathTool(
-                        "linear-algebra"
-                    );
-
-                };
-
-
-
-        // ============================
-        // PHYSICS
-        // ============================
-
-        const physicsTopics =
-            document.querySelectorAll(
-                "#physics .topic"
-            );
-
-
-        if (physicsTopics[0]) {
-
-            physicsTopics[0].onclick =
-                function() {
-
-                    openPhysicsTool(
-                        "classical-mechanics"
-                    );
-
-                };
-
-        }
-
-
-        if (physicsTopics[1]) {
-
-            physicsTopics[1].onclick =
-                function() {
-
-                    openPhysicsTool(
-                        "quantum-mechanics"
-                    );
-
-                };
-
-        }
-
-
-        if (physicsTopics[2]) {
-
-            physicsTopics[2].onclick =
-                function() {
-
-                    openPhysicsTool(
-                        "relativity"
-                    );
-
-                };
-
-        }
-
-
-        if (physicsTopics[3]) {
-
-            physicsTopics[3].onclick =
-                function() {
-
-                    openPhysicsTool(
-                        "mathematical-physics"
-                    );
-
-                };
-
-        }
-
-
-        // Load initial data
-
-        loadResearch();
-
-        loadFeaturedResearch();
+        showScreen("home");
 
     }
 );
-```
